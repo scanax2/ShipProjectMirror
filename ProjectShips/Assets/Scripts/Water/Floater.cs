@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Ten skrypt odpowiada za fizyke wody z Rigibody
+
 public class Floater : MonoBehaviour
 {
     public Rigidbody rigidBody;
@@ -16,7 +18,6 @@ public class Floater : MonoBehaviour
     private void FixedUpdate()
     {
         rigidBody.AddForceAtPosition(Physics.gravity / floaterCount, transform.position, ForceMode.Acceleration);
-        //float waveHeight = WaveManager.instance.GetWaveHeight(transform.position.x);
         float waveHeight = WaveManager.instance.GetWaveHeight(transform.position.x);
         if (transform.position.y < waveHeight)
         {

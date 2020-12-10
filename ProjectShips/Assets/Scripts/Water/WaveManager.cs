@@ -6,51 +6,18 @@ public class WaveManager : MonoBehaviour
 {
     public static WaveManager instance;
 
-    [Header("WaveA")]
-    [Range(-1, 1)]
-    public float dirX1 = 1;
-    [Range(-1, 1)]
-    public float dirY1 = 0;
-    [Range(0, 1)]
-    public float steepness1 = 0.5f;
-    public float wavelength1 = 10f;
-
-    [Header("WaveB")]
-    [Range(-1, 1)]
-    public float dirX2 = 1;
-    [Range(-1, 1)]
-    public float dirY2 = 0;
-    [Range(0, 1)]
-    public float steepness2 = 0.5f;
-    public float wavelength2= 10f;
-
-    [Header("WaveC")]
-    [Range(-1, 1)]
-    public float dirX3 = 1;
-    [Range(-1, 1)]
-    public float dirY3 = 0;
-    [Range(0, 1)]
-    public float steepness3 = 0.5f;
-    public float wavelength3 = 10f;
-
-    [Header("WaveD")]
-    [Range(-1, 1)]
-    public float dirX4 = 1;
-    [Range(-1, 1)]
-    public float dirY4 = 0;
-    [Range(0, 1)]
-    public float steepness4 = 0.5f;
-    public float wavelength4 = 10f;
-
     private Vector4 waveA;
     private Vector4 waveB;
     private Vector4 waveC;
     private Vector4 waveD;
 
+    private MeshRenderer rend;
+
     private void Awake()
     {
         if (instance == null)
         {
+            rend = GetComponent<MeshRenderer>();
             instance = this;
         }
         else if (instance != this)
@@ -62,23 +29,23 @@ public class WaveManager : MonoBehaviour
 
     private void Update()
     {
-        waveA = new Vector4(dirX1, dirY1, steepness1, wavelength1);
-        waveB = new Vector4(dirX2, dirY2, steepness2, wavelength2);
-        waveC = new Vector4(dirX3, dirY3, steepness3, wavelength3);
-        waveD = new Vector4(dirX4, dirY4, steepness4, wavelength4);
-        // offset += Time.deltaTime * speed;
+        //Pobieranie zmiennych z shadera
+        waveA = rend.material.GetVector("Vector4_EBAA9535");
+        waveB = rend.material.GetVector("Vector4_EB7AD3C1");
+        waveC = rend.material.GetVector("Vector4_F2108763");
+        waveD = rend.material.GetVector("Vector4_C2031578");
+
+        waveA.x *= -1;
+        waveA.y *= -1;
+        waveB.x *= -1;
+        waveB.y *= -1;
+        waveC.x *= -1;
+        waveC.y *= -1;
+        waveD.x *= -1;
+        waveD.y *= -1;
     }
 
-    public Vector3 TestWave(Vector3 p)
-    {
-        float k = 2 * Mathf.PI / wavelength1;
-        float f = k * (p.x - Time.timeSinceLevelLoad);
-        p.x += steepness1 * Mathf.Cos(f);
-        p.y = steepness1 * Mathf.Sin(f);
-        
-        return p;
-    }
-
+    
     public Vector3 GerstnerWave(Vector3 p, int waveIndex)
     {
         Vector4 wave = new Vector4(0,0,0,0);
@@ -116,8 +83,9 @@ public class WaveManager : MonoBehaviour
         Vector3 gridPoint = p;
         for (int i = 1; i <= 4; i++)
         {
-            p.y += GerstnerWave(gridPoint, i).y;
+            p.y -= GerstnerWave(gridPoint, i).y;
         }
         return p.y;
     }
+
 }
