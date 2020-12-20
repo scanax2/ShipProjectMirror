@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: URPGerstner
+  m_Name: GerstnerOld
   m_Shader: {fileID: -6465566751694194690, guid: 32009f1a14e4ffc4bafc2cfda10aaccc, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -42,6 +42,6 @@ Material:
     - Vector2_561CF597: {r: 1, g: 3, b: 0, a: 0}
     - Vector4_C2031578: {r: 1.45, g: 3, b: 0, a: 2}
     - Vector4_EB7AD3C1: {r: -1, g: -1, b: 0, a: 5}
-    - Vector4_EBAA9535: {r: 1, g: -0.48, b: 0.8, a: 20}
+    - Vector4_EBAA9535: {r: 1, g: -0.48, b: 0.6, a: 35}
     - Vector4_F2108763: {r: -1, g: 1, b: 0, a: 3}
   m_BuildTextureStacks: []

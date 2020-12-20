@@ -15,10 +15,12 @@ public class Floater : MonoBehaviour
 
     public int floaterCount = 1;
 
+    private float waveHeight;
+
     private void FixedUpdate()
     {
         rigidBody.AddForceAtPosition(Physics.gravity / floaterCount, transform.position, ForceMode.Acceleration);
-        float waveHeight = WaveManager.instance.GetWaveHeight(transform.position.x);
+        waveHeight = WaveManager.instance.GetWaveHeight(transform.position.x);
         if (transform.position.y < waveHeight)
         {
             float displacementMultiplier = Mathf.Clamp01((waveHeight - transform.position.y) / depthBeforeSubmerged) * displacementAmount;
@@ -27,4 +29,20 @@ public class Floater : MonoBehaviour
             rigidBody.AddTorque(displacementMultiplier * -rigidBody.angularVelocity * waterAngularDrag * Time.fixedDeltaTime, ForceMode.VelocityChange);
         }
     }
+
+    public bool isFloaterGrounded()
+    {
+        waveHeight = WaveManager.instance.GetWaveHeight(transform.position.x);
+        Debug.Log(this + " Wave Height: " + waveHeight + " Pos Y: " + transform.position.y);
+        if (waveHeight >= transform.position.y)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
 }

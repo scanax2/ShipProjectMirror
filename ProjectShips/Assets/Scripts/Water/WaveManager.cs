@@ -13,6 +13,7 @@ public class WaveManager : MonoBehaviour
 
     private MeshRenderer rend;
 
+
     private void Awake()
     {
         if (instance == null)
@@ -35,14 +36,14 @@ public class WaveManager : MonoBehaviour
         waveC = rend.material.GetVector("Vector4_F2108763");
         waveD = rend.material.GetVector("Vector4_C2031578");
 
-        waveA.x *= -1;
-        waveA.y *= -1;
-        waveB.x *= -1;
-        waveB.y *= -1;
-        waveC.x *= -1;
-        waveC.y *= -1;
-        waveD.x *= -1;
-        waveD.y *= -1;
+        //waveA.x *= -1;
+        //waveA.y *= -1;
+        //waveB.x *= -1;
+        //waveB.y *= -1;
+        //waveC.x *= -1;
+        //waveC.y *= -1;
+        //waveD.x *= -1;
+        //waveD.y *= -1;
     }
 
     
@@ -81,6 +82,7 @@ public class WaveManager : MonoBehaviour
     {
         Vector3 p = new Vector3(x, 0, 0);
         Vector3 gridPoint = p;
+        float tmp = 0;
         for (int i = 1; i <= 4; i++)
         {
             p.y -= GerstnerWave(gridPoint, i).y;
