@@ -6,9 +6,9 @@ public class CannonController : MonoBehaviour
 {
     [SerializeField] private float strength = 500;
     [SerializeField] private GameObject ballPrefab;
-    [SerializeField] private float distance = 2500;
+    [SerializeField] private Vector2 distance;
 
-    private Vector2 angleFix;
+    [SerializeField] private Vector2 angleFix;
 
     private Vector3 firePointPosition;
     private Camera cam;
@@ -17,8 +17,8 @@ public class CannonController : MonoBehaviour
 
     private void Start()
     {
-        cam = transform.parent.GetComponentInChildren<Camera>();
-        angleFix = new Vector2(10, 5);
+        //cam = transform.parent.GetComponentInChildren<Camera>();
+        cam = transform.parent.parent.GetComponentInChildren<Camera>();
     }
 
     private void Update()
@@ -35,10 +35,11 @@ public class CannonController : MonoBehaviour
         Vector3 screenPos = cam.WorldToScreenPoint(transform.position);
         Vector3 mousePos = Input.mousePosition;
 
-        float alphaX = Mathf.Atan2(mousePos.y - screenPos.y, distance);
-        float alphaY = Mathf.Atan2(mousePos.x - screenPos.x, distance);
- 
-        transform.localRotation = new Quaternion(alphaX, alphaY, 0, 1);
+        float alphaX = Mathf.Atan2(mousePos.y - screenPos.y, distance.y);
+        float alphaY = Mathf.Atan2(mousePos.x - screenPos.x, distance.x);
+
+        //transform.localRotation = new Quaternion(alphaX, alphaY, 0, 1);
+        transform.localRotation = new Quaternion(0, alphaY, -alphaX, 1);
     }
 
     private void Shoot()
@@ -48,7 +49,8 @@ public class CannonController : MonoBehaviour
         var go = Instantiate(ballPrefab, firePointPosition, Quaternion.identity);
         var rigidbody = go.GetComponent<Rigidbody>();
 
-        Vector3 forwardVector = new Vector3(Mathf.Sin(transform.localRotation.y * angleFix.x), Mathf.Sin(transform.localRotation.x * angleFix.y), Mathf.Cos(transform.localRotation.y)) * strength;
+        //Vector3 forwardVector = new Vector3(Mathf.Sin(transform.localRotation.y * angleFix.x), Mathf.Sin(transform.localRotation.x * angleFix.y), Mathf.Cos(transform.localRotation.y)) * strength;
+        Vector3 forwardVector = new Vector3(Mathf.Sin(transform.localRotation.y * angleFix.x), Mathf.Sin(-transform.localRotation.z * angleFix.y), Mathf.Cos(transform.localRotation.y)) * strength;
         rigidbody.AddForce(forwardVector, ForceMode.Impulse);
     }
 }
