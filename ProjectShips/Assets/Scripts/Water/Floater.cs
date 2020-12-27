@@ -33,7 +33,6 @@ public class Floater : MonoBehaviour
     public bool isFloaterGrounded()
     {
         waveHeight = WaveManager.instance.GetWaveHeight(transform.position.x);
-        Debug.Log(this + " Wave Height: " + waveHeight + " Pos Y: " + transform.position.y);
         if (waveHeight >= transform.position.y)
         {
             return true;
