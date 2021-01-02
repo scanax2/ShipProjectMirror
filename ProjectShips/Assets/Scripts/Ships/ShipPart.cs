@@ -4,17 +4,40 @@ using UnityEngine;
 
 namespace ProjectShips.Ships
 {
-    [RequireComponent(typeof(Rigidbody))]
     public class ShipPart : MonoBehaviour
     {
         public List<ShipPart> Next = new List<ShipPart>();
-        public float MinVelocityToBreak = 1f;
+        public float MinVelocityToBreak = 3f;
+        [SerializeField] float _mass = 10f;
+        public float Mass
+        {
+            get => _mass;
+            set
+            {
+                _mass = value;
+
+                if (rb != null)
+                    rb.mass = _mass;
+            }
+        }
 
         Rigidbody rb;
 
         private void Awake()
         {
-            rb = GetComponent<Rigidbody>();
+            if (!TryGetComponent(out rb))
+            {
+                rb = gameObject.AddComponent<Rigidbody>();
+                rb.drag = 0.05f;
+            }
+
+            rb.isKinematic = true;
+            rb.mass = Mass;
+
+            if (!TryGetComponent<Collider>(out _))
+            {
+                gameObject.AddComponent<MeshCollider>().convex = true;
+            }
         }
 
         /// <summary>
