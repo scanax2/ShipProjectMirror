@@ -36,8 +36,8 @@ namespace ProjectShips.Ships
                 if (!hadShipPartComponent)
                 {
                     shipPart = child.gameObject.AddComponent<ShipPart>();
-                    shipPart.MinMomentumToBreak = _minMomentumToBreak;
                 }
+                shipPart.MinMomentumToBreak = _minMomentumToBreak;
 
                 // If someone already set mass for a part then we don't want to override it
                 if (canOverrideMass)
