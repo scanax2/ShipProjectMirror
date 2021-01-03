@@ -35666,7 +35666,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _subpartsSuffix: _cell
-  _minMomentumToBreak: 20
+  _minMomentumToBreak: 500
   _mass: 10
 --- !u!1 &5438409234674465915
 GameObject:
