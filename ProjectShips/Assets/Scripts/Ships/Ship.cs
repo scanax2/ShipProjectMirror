@@ -15,13 +15,13 @@ namespace ProjectShips.Ships
 
         private void Awake()
         {
-            FindParts(_subpartsSuffix);
+            FindParts();
         }
 
         /// <summary>
         /// Find parts and builds simple 2 level deep linked list out of them.
         /// </summary>
-        private void FindParts(string subpartSuffix)
+        private void FindParts(string subpartSuffix, bool disableChildren = true)
         {
             for (int i = 0; i < transform.childCount; i++)
             {
@@ -57,10 +57,21 @@ namespace ProjectShips.Ships
                     if (!MainParts.Contains(mainPart))
                         MainParts.Add(mainPart);
 
-                    mainPart.Next.Add(child.gameObject.GetComponent<ShipPart>());
-                    child.gameObject.SetActive(false);
+                    var childShipPart = child.gameObject.GetComponent<ShipPart>();
+                    if (!mainPart.Next.Contains(childShipPart))
+                        mainPart.Next.Add(childShipPart);
+
+                    // Referencing same materials that main part uses
+                    child.GetComponentInChildren<Renderer>().sharedMaterials = mainPartGO.GetComponentInChildren<Renderer>().sharedMaterials;
+
+                    child.gameObject.SetActive(!disableChildren);
                 }
             }
+        }
+
+        public void FindParts(bool disableChildren = true)
+        {
+            FindParts(_subpartsSuffix, disableChildren);
         }
     }
 }
