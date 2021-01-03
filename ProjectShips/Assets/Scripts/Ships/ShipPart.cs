@@ -4,29 +4,53 @@ using UnityEngine;
 
 namespace ProjectShips.Ships
 {
-    [RequireComponent(typeof(Rigidbody))]
     public class ShipPart : MonoBehaviour
     {
         public List<ShipPart> Next = new List<ShipPart>();
-        public float MinVelocityToBreak = 1f;
+        public float MinMomentumToBreak = 3f;
+        [SerializeField] float _mass = 10f;
 
-        Rigidbody rb;
+        Rigidbody _rb;
+
+        public float Mass
+        {
+            get => _mass;
+            set
+            {
+                _mass = value;
+
+                if (_rb != null)
+                    _rb.mass = _mass;
+            }
+        }
 
         private void Awake()
         {
-            rb = GetComponent<Rigidbody>();
+            if (!TryGetComponent(out _rb))
+            {
+                _rb = gameObject.AddComponent<Rigidbody>();
+                _rb.drag = 0.05f;
+            }
+
+            _rb.isKinematic = true;
+            _rb.mass = Mass;
+
+            if (!TryGetComponent<Collider>(out _))
+            {
+                gameObject.AddComponent<MeshCollider>().convex = true;
+            }
         }
 
         /// <summary>
         /// Shatters object into next parts if velocity was high enough.
         /// </summary>
-        public List<ShipPart> Shatter(float velocity, Vector3 point)
+        public List<ShipPart> Shatter(float momentum, Vector3 point)
         {
-            if (velocity / (1 + (transform.position - point).sqrMagnitude) > MinVelocityToBreak)
+            if (momentum / (1 + (transform.position - point).sqrMagnitude) > MinMomentumToBreak)
             {
                 if (Next == null || Next.Count == 0)
                 {
-                    rb.isKinematic = false;
+                    _rb.isKinematic = false;
                     return new List<ShipPart>() { this };
                 }
                 else
@@ -45,9 +69,9 @@ namespace ProjectShips.Ships
         /// <summary>
         /// Shatters object into next parts if velocity was high enough.
         /// </summary>
-        public List<ShipPart> Shatter(float velocity)
+        public List<ShipPart> Shatter(float momentum)
         {
-            return Shatter(velocity, transform.position);
+            return Shatter(momentum, transform.position);
         }
 
         public void OnCollisionEnter(Collision collision)
@@ -55,7 +79,17 @@ namespace ProjectShips.Ships
             if (collision.rigidbody == null)
                 return;
 
-            Shatter(collision.rigidbody.velocity.magnitude);
+            var collRb = collision.rigidbody;
+            Shatter(CalculateMomentum(collRb.velocity, collRb.mass, collision.contacts[0].normal));
+        }
+
+        /// <summary>
+        /// Calculates momentum relative to plane with specified normal.
+        /// </summary>
+        public static float CalculateMomentum(Vector3 velocity, float mass, Vector3 normal)
+        {
+            var dotProduct = Mathf.Abs(Vector3.Dot(normal, velocity.normalized));
+            return (velocity * dotProduct).magnitude * mass;
         }
     }
 }

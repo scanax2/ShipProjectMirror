@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5371950244198688073}
   m_Layer: 0
-  m_Name: CannonVersion2
+  m_Name: Cannon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -129,6 +129,18 @@ PrefabInstance:
     - target: {fileID: 8753887106339984226, guid: 81fbd5ba67c27aa48bdf78f912e7efce, type: 3}
       propertyPath: m_LocalPosition.z
       value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8753887106339984226, guid: 81fbd5ba67c27aa48bdf78f912e7efce, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8753887106339984226, guid: 81fbd5ba67c27aa48bdf78f912e7efce, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8753887106339984226, guid: 81fbd5ba67c27aa48bdf78f912e7efce, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5197606156680670120, guid: 81fbd5ba67c27aa48bdf78f912e7efce, type: 3}

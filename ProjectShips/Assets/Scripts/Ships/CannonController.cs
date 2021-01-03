@@ -95,7 +95,8 @@ public class CannonController : MonoBehaviour
         var rigidbody = go.GetComponent<Rigidbody>();
 
         //Vector3 forwardVector = new Vector3(Mathf.Sin(transform.localRotation.y * angleFix.x), Mathf.Sin(transform.localRotation.x * angleFix.y), Mathf.Cos(transform.localRotation.y)) * strength;
-        Vector3 forwardVector = new Vector3(Mathf.Sin(transform.localRotation.y * angleFix.x), Mathf.Sin(-transform.localRotation.z * angleFix.y), Mathf.Cos(transform.localRotation.y)) * strength;
+        //Vector3 forwardVector = new Vector3(Mathf.Sin(transform.localRotation.y * angleFix.x), Mathf.Sin(-transform.localRotation.z * angleFix.y), Mathf.Cos(transform.localRotation.y)) * strength;
+        Vector3 forwardVector = transform.GetChild(0).forward * strength;
         rigidbody.AddForce(forwardVector, ForceMode.Impulse);
 
         //parentRigidbody.AddForce(-forwardVector, ForceMode.Impulse);
