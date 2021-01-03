@@ -7,15 +7,15 @@ namespace ProjectShips.Ships
     public class Ship : MonoBehaviour
     {
         public HashSet<ShipPart> MainParts = new HashSet<ShipPart>();
-        [SerializeField] string subpartsSuffix = "_cell";
+        [SerializeField] string _subpartsSuffix = "_cell";
 
         [Header("Parts settings")]
-        [SerializeField] float _minVelocityToBreak = 3f;
+        [SerializeField] float _minMomentumToBreak = 3f;
         [SerializeField] float _mass = 10f;
 
         private void Awake()
         {
-            FindParts(subpartsSuffix);
+            FindParts(_subpartsSuffix);
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace ProjectShips.Ships
                 if (!hadShipPartComponent)
                 {
                     shipPart = child.gameObject.AddComponent<ShipPart>();
-                    shipPart.MinVelocityToBreak = _minVelocityToBreak;
+                    shipPart.MinMomentumToBreak = _minMomentumToBreak;
                 }
 
                 // If someone already set mass for a part then we don't want to override it

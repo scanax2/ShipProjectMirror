@@ -8,28 +8,33 @@ namespace ProjectShips.Ships
     [RequireComponent(typeof(Rigidbody))]
     public class CannonBall : MonoBehaviour
     {
-        public float DeathDelay = 5f;
-        public float ExplosionRadius = 2f;
-        public float ExplosionPower = 1.2f;
+        public float DeathDelay = 10f;
+        public float ExplosionRadius = 1.5f;
+        public float ExplosionPower = 1f;
 
         /// <summary>
         /// Event executed on ball collision with ship part.
         /// </summary>
-        public UnityEvent<Vector3, CannonBall> HitShipPart;
+        public UnityEvent<float, CannonBall> HitShipPart;
 
-        new Rigidbody rigidbody;
+        Rigidbody _rigidbody;
 
         private void Start()
         {
-            rigidbody = GetComponent<Rigidbody>();
+            _rigidbody = GetComponent<Rigidbody>();
         }
 
-        float tDeath = 0;
+        private void OnDestroy()
+        {
+            HitShipPart.RemoveAllListeners();
+        }
+
+        float _tDeath = 0;
         private void Update()
         {
-            tDeath += Time.deltaTime;
+            _tDeath += Time.deltaTime;
 
-            if (tDeath >= DeathDelay)
+            if (_tDeath >= DeathDelay)
                 Destroy(gameObject);
         }
 
@@ -43,19 +48,21 @@ namespace ProjectShips.Ships
                 if (!hit.TryGetComponent<ShipPart>(out var shipPart))
                     continue;
 
-                var parts = shipPart.Shatter(ExplosionPower * rigidbody.velocity.magnitude, explosionPos);
+                var parts = shipPart.Shatter(ExplosionPower * _rigidbody.velocity.magnitude * _rigidbody.mass, explosionPos);
 
                 foreach (var part in parts)
                 {
                     Rigidbody partRigidbody = part.GetComponent<Rigidbody>();
 
                     if (partRigidbody != null)
-                        partRigidbody.AddExplosionForce(ExplosionPower * rigidbody.velocity.magnitude, explosionPos, ExplosionRadius, 2.0F);
+                        partRigidbody.AddExplosionForce(ExplosionPower * _rigidbody.velocity.magnitude * _rigidbody.mass, explosionPos, ExplosionRadius, 0.0F);
                 }
             }
 
             if(collision.gameObject.TryGetComponent<ShipPart>(out _))
-                HitShipPart?.Invoke(rigidbody.velocity, this);
+                HitShipPart?.Invoke(
+                    ShipPart.CalculateMomentum(_rigidbody.velocity, _rigidbody.mass, collision.contacts[0].normal),
+                    this);
         }
     }
 }
