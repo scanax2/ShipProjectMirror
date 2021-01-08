@@ -6,6 +6,9 @@ namespace ProjectShips.Ships
 {
     public class ShipPart : MonoBehaviour
     {
+        public GameObject FloaterPrefab;
+        private bool isFloater;
+
         public List<ShipPart> Next = new List<ShipPart>();
         public float MinMomentumToBreak = 3f;
         [SerializeField] float _mass = 10f;
@@ -48,6 +51,9 @@ namespace ProjectShips.Ships
         {
             if (momentum / (1 + (transform.position - point).sqrMagnitude) > MinMomentumToBreak)
             {
+                //Dla interakcji z woda
+                SetWaterInteraction();
+
                 if (Next == null || Next.Count == 0)
                 {
                     _rb.isKinematic = false;
@@ -66,6 +72,25 @@ namespace ProjectShips.Ships
             return new List<ShipPart>();
         }
 
+        void SetWaterInteraction()
+        {
+            if (FloaterPrefab && !isFloater)
+            {
+                transform.parent = null;
+                GameObject floater = Instantiate(FloaterPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+                floater.transform.parent = transform;
+                floater.transform.localPosition = new Vector3(0, 0, 0);
+                floater.GetComponent<Floater>().rigidBody = GetComponent<Rigidbody>();
+                isFloater = true;
+                GetComponent<Rigidbody>().isKinematic = false;
+                if (gameObject.active)
+                {
+                    StartCoroutine(TurnIsKinematic(5));
+                }
+
+            }
+        }
+
         /// <summary>
         /// Shatters object into next parts if velocity was high enough.
         /// </summary>
@@ -74,10 +99,17 @@ namespace ProjectShips.Ships
             return Shatter(momentum, transform.position);
         }
 
+        private IEnumerator TurnIsKinematic(float time)
+        {
+            yield return new WaitForSeconds(time);
+            GetComponent<Rigidbody>().isKinematic = false;
+        }
+
         public void OnCollisionEnter(Collision collision)
         {
-            if (collision.rigidbody == null)
+            if (collision.rigidbody == null || collision.transform.tag != "Projectile")
                 return;
+               
 
             var collRb = collision.rigidbody;
             Shatter(CalculateMomentum(collRb.velocity, collRb.mass, collision.contacts[0].normal));

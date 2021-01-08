@@ -36,6 +36,7 @@ public class WaveManager : MonoBehaviour
         waveC = rend.material.GetVector("Vector4_F2108763");
         waveD = rend.material.GetVector("Vector4_C2031578");
 
+
         //waveA.x *= -1;
         //waveA.y *= -1;
         //waveB.x *= -1;
@@ -65,7 +66,7 @@ public class WaveManager : MonoBehaviour
                 wave = waveD;
                 break;
         }
-
+    
         float steepness = wave.z;
         float wavelength = wave.w;
         float k = 2 * Mathf.PI / wavelength;

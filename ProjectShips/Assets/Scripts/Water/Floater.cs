@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Floater : MonoBehaviour
 {
+    //public Rigidbody rigidBody;
     public Rigidbody rigidBody;
 
     public float depthBeforeSubmerged = 1f;
@@ -16,6 +17,11 @@ public class Floater : MonoBehaviour
     public int floaterCount = 1;
 
     private float waveHeight;
+
+    private void Start()
+    {
+        rigidBody = transform.parent.GetComponent<Rigidbody>();
+    }
 
     private void FixedUpdate()
     {

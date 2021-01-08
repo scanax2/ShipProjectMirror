@@ -6,12 +6,12 @@ using UnityEngine.UI;
 public class CannonController : MonoBehaviour
 {
     [SerializeField] private float strength = 2500;
+    [SerializeField] private float recoilStrength = 1000;
     [SerializeField] private GameObject ballPrefab;
     [SerializeField] private GameObject sliderObj;
     [SerializeField] private GameObject particleShotePrefab;
     [SerializeField] private Vector2 distance;
     [SerializeField] private float cooldown;
-    [SerializeField] private Vector2 angleFix;
 
     private float currentCooldown;
 
@@ -94,12 +94,16 @@ public class CannonController : MonoBehaviour
         var go = Instantiate(ballPrefab, firePointPosition, Quaternion.identity);
         var rigidbody = go.GetComponent<Rigidbody>();
 
-        //Vector3 forwardVector = new Vector3(Mathf.Sin(transform.localRotation.y * angleFix.x), Mathf.Sin(transform.localRotation.x * angleFix.y), Mathf.Cos(transform.localRotation.y)) * strength;
-        //Vector3 forwardVector = new Vector3(Mathf.Sin(transform.localRotation.y * angleFix.x), Mathf.Sin(-transform.localRotation.z * angleFix.y), Mathf.Cos(transform.localRotation.y)) * strength;
         Vector3 forwardVector = transform.GetChild(0).forward * strength;
         rigidbody.AddForce(forwardVector, ForceMode.Impulse);
 
-        //parentRigidbody.AddForce(-forwardVector, ForceMode.Impulse);
+        Vector3 recoilVector = new Vector3(0,0,-recoilStrength);
+        Quaternion recoilVectorQuat = transform.parent.parent.rotation;
+        recoilVectorQuat.z = -recoilStrength;
+        // transform.parent.parent.GetComponent<Rigidbody>().AddTorque(recoilVector, ForceMode.Impulse);
+        // transform.parent.parent.rotation = Quaternion.Lerp(transform.parent.parent.rotation, recoilVectorQuat, Time.time * 0.1f);
+        Debug.Log(transform.parent.parent.GetComponent<Rigidbody>());
+
         StartCoroutine(Reload());
     }
 }
