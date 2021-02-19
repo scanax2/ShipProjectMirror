@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class CannonController : MonoBehaviour
 {
+    public bool UseUserInput = true;
+
     [SerializeField] private float strength = 2500;
     [SerializeField] private float recoilStrength = 1000;
     [SerializeField] private GameObject ballPrefab;
@@ -34,6 +36,9 @@ public class CannonController : MonoBehaviour
 
     private void Update()
     {
+        if (!UseUserInput)
+            return;
+
         MoveCannon();
         if (sliderObj)
         {
@@ -55,7 +60,7 @@ public class CannonController : MonoBehaviour
         float alphaY = Mathf.Atan2(mousePos.x - screenPos.x, distance.x);
 
         //transform.localRotation = new Quaternion(alphaX, alphaY, 0, 1);
-        transform.localRotation = new Quaternion(0, alphaY, -alphaX, 1);
+        transform.localRotation = Quaternion.Euler(0, 90, 0) * new Quaternion(0, alphaY, -alphaX, 1);
     }
 
     private void ChangeSlider()
@@ -82,7 +87,7 @@ public class CannonController : MonoBehaviour
         isReload = false;
     }
 
-    private void Shoot()
+    public void Shoot()
     {
         firePointPosition = transform.GetChild(0).position;
 
@@ -104,7 +109,8 @@ public class CannonController : MonoBehaviour
         // transform.parent.parent.rotation = Quaternion.Lerp(transform.parent.parent.rotation, recoilVectorQuat, Time.time * 0.1f);
         Debug.Log(transform.parent.parent.GetComponent<Rigidbody>());
 
-        StartCoroutine(Reload());
+        if (UseUserInput)
+            StartCoroutine(Reload());
     }
 }
 

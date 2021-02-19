@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GerstnerUpgraded
-  m_Shader: {fileID: -6465566751694194690, guid: 8546d05589998b14aa795b38c6a571f9, type: 3}
+  m_Name: GerstnerUpgradedGameplay
+  m_Shader: {fileID: -6465566751694194690, guid: 0ba34c409f6704b4f909ede65060669a, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -24,7 +24,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_EC35439B:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 28e0ac8a221c8d84bae11421459ecc34, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_F5F7589:
@@ -32,23 +32,23 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Vector1_120611D9: 3
-    - Vector1_125602D3: 150
+    - Vector1_120611D9: 11.11
+    - Vector1_125602D3: 1000
     - Vector1_252E6F2D: 1.01
     - Vector1_4DB36D80: -0.5
     - Vector1_916E08DF: 0.08
     - Vector1_966FB2E8: 0
-    - Vector1_AD78A7DF: 6
-    - Vector1_ADFD0419: 1.8
+    - Vector1_AD78A7DF: 7.68
+    - Vector1_ADFD0419: 0.39
     - Vector1_CA009A0C: 0
     - Vector1_F50443DF: 0.1
     - Vector1_F9C9E954: 1
     m_Colors:
-    - Color_3B291CBF: {r: 0.44716978, g: 1, b: 0.89602363, a: 1}
-    - Color_ADD0F931: {r: 0, g: 0.43172494, b: 0.6886792, a: 0}
+    - Color_3B291CBF: {r: 1, g: 1, b: 1, a: 1}
+    - Color_ADD0F931: {r: 0.25453898, g: 0.3132787, b: 0.3773585, a: 0}
     - Color_EC1E8A7A: {r: 0.6132076, g: 0.6132076, b: 0.6132076, a: 0}
-    - Vector4_C2031578: {r: 0, g: 1, b: 0, a: 1}
-    - Vector4_EB7AD3C1: {r: 0, g: 1, b: 0, a: 1}
-    - Vector4_EBAA9535: {r: -1, g: 0, b: 0.2, a: 30}
-    - Vector4_F2108763: {r: 0, g: 1, b: 0, a: 1}
+    - Vector4_C2031578: {r: 0, g: 1, b: 0.02, a: 1}
+    - Vector4_EB7AD3C1: {r: 0, g: 1, b: 0.01, a: 1}
+    - Vector4_EBAA9535: {r: 1, g: 0.58, b: 0.08, a: 50}
+    - Vector4_F2108763: {r: 1, g: 1, b: -0.05, a: 1}
   m_BuildTextureStacks: []
