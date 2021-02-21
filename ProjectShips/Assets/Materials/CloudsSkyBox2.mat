@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: CloudsSkyBox2
+  m_Shader: {fileID: -6465566751694194690, guid: 8ab048efc84389e44bdc13dd3afc556b, type: 3}
+  m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - Texture2D_80E8D820:
+        m_Texture: {fileID: 2800000, guid: 5455a0ca5ca727846b223ddc524c644b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - Vector1_26E5342B: 1.42
+    - Vector1_45653E42: 0.63
+    - Vector1_AA0149BE: 0.31
+    m_Colors:
+    - Color_18A0827: {r: 0.43867922, g: 0.7357848, b: 1, a: 0}
+    - Color_38F3433E: {r: 1, g: 1, b: 1, a: 0}
+    - Color_6A1DED6B: {r: 0, g: 0.2150943, b: 0.6792453, a: 0}
+    - Color_AC631BA0: {r: 1, g: 1, b: 1, a: 0}
+    - Vector2_4E4E2C3D: {r: 0.025, g: 0.05, b: 0, a: 0}
+    - Vector2_7DF079E7: {r: 0.22, g: 0.21, b: 1, a: 1}
+    - Vector3_4A56581D: {r: 0.75, g: 1.25, b: 1.41, a: 0}
+    - Vector3_B2EE3FD1: {r: 0.57, g: 1.21, b: 1.03, a: 0}
+    - Vector3_E76E9B0E: {r: 1, g: 2.7, b: 1.77, a: 0}
+  m_BuildTextureStacks: []
