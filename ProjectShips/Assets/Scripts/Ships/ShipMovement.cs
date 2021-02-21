@@ -7,9 +7,7 @@ using UnityEngine;
 public class ShipMovement : MonoBehaviour
 {
     public float speed;
-
     private Rigidbody rigidBody;
-
     private Vector2 movement;
 
     private void Start()
@@ -28,7 +26,7 @@ public class ShipMovement : MonoBehaviour
         bool onGround = true;
         foreach (Floater floater in GetComponentsInChildren<Floater>())
         {
-            if (!floater.isFloaterGrounded())
+            if (!floater.isFloaterUnderwater())
             {
                 onGround = false;
             }
