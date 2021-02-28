@@ -9,9 +9,13 @@ public class CannonController : MonoBehaviour
 
     [SerializeField] private float strength = 2500;
     [SerializeField] private float recoilStrength = 1000;
+
     [SerializeField] private GameObject ballPrefab;
     [SerializeField] private GameObject sliderObj;
     [SerializeField] private GameObject particleShotePrefab;
+
+    [SerializeField] private ReloadController reloadController;
+
     [SerializeField] private Vector2 distance;
     [SerializeField] private float cooldown;
 
@@ -32,6 +36,7 @@ public class CannonController : MonoBehaviour
         {
             slider = sliderObj.GetComponent<Slider>();
         }
+        reloadController = GetComponent<ReloadController>();
     }
 
     private void Update()
@@ -84,6 +89,7 @@ public class CannonController : MonoBehaviour
 
         isReload = true;
         yield return new WaitForSeconds(cooldown);
+        reloadController.EndMiniGame();
         isReload = false;
     }
 
@@ -110,7 +116,10 @@ public class CannonController : MonoBehaviour
         Debug.Log(transform.parent.parent.GetComponent<Rigidbody>());
 
         if (UseUserInput)
+        {
+            reloadController.StartMiniGame();
             StartCoroutine(Reload());
+        }
     }
 }
 

@@ -51,7 +51,7 @@ namespace ProjectShips.Ships
         {
             if (momentum / (1 + (transform.position - point).sqrMagnitude) > MinMomentumToBreak)
             {
-                //Dla interakcji z woda
+                // Turn on interaction with water
                 SetWaterInteraction();
 
                 if (Next == null || Next.Count == 0)

@@ -12,6 +12,7 @@ namespace ProjectShips.Ships
         public float ExplosionRadius = 1.5f;
         public float ExplosionPower = 1f;
 
+
         /// <summary>
         /// Event executed on ball collision with ship part.
         /// </summary>
@@ -22,6 +23,7 @@ namespace ProjectShips.Ships
         private void Start()
         {
             _rigidbody = GetComponent<Rigidbody>();
+          
         }
 
         private void OnDestroy()
