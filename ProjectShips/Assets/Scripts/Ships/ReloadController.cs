@@ -10,6 +10,8 @@ public class ReloadController : MonoBehaviour
     [SerializeField] private GameObject greenCircle;
     [SerializeField] private GameObject redCircle;
 
+    [SerializeField] private float reduceValue;
+
     [SerializeField] private GameObject arrowClock;
     [SerializeField] private Transform rotationCenter;
     [SerializeField] private float clockSpeed;
@@ -19,6 +21,8 @@ public class ReloadController : MonoBehaviour
     private Image imageRedCircle;
     private Image imageBoundCircle;
 
+    [SerializeField] private float timeToAppearModels; // 0.25f default
+
     private Vector3 defaultPosition;
 
     private float clockRadius;
@@ -27,6 +31,9 @@ public class ReloadController : MonoBehaviour
 
     private int clockwiseFactor = 1;
     private bool inMiniGame = false;
+
+    private float greenRangeStartAngle = 0f;
+    private float greenRangeEndAngle = 0f;
 
     private void Start()
     {
@@ -43,18 +50,35 @@ public class ReloadController : MonoBehaviour
         imageBoundCircle.fillAmount = 0f;
         arrowClock.GetComponent<Image>().fillAmount = 0f;
 
+        imageGreenCircle.fillOrigin = 0;
+        imageRedCircle.fillOrigin = 0;
+        imageBoundCircle.fillOrigin = 0;
+        arrowClock.GetComponent<Image>().fillOrigin = 0;
+
         defaultPosition = arrowClock.transform.transform.localPosition;
     }
 
-    public void StartMiniGame()
+    public void InitMiniGame()
+    {
+        StartMiniGame(timeToAppearModels);
+    }
+
+    public void StartMiniGame(float timeToAppear)
     {
         RectTransform rt = boundCircle.GetComponent<RectTransform>();
         clockRadius = (rt.rect.width / 2 - rt.rect.width / 4);
-        Debug.Log(clockRadius);
 
-        CreateCircles();
-        StartCoroutine(SmoothCircleAppear(0f, 1f, 0.25f, arrowClock.GetComponent<Image>()));
-        StartCoroutine(CreateArrow(0.5f));
+
+        CreateCircles(timeToAppear);
+        StartCoroutine(SmoothImageAppear(0f, 1f, timeToAppear, arrowClock.GetComponent<Image>()));
+        StartCoroutine(CreateArrow(timeToAppear*2));
+
+        posX = 0;
+        posY = 0;
+        angle = Mathf.PI / 2;
+
+        arrowClock.transform.rotation = new Quaternion(0, 0, 0, arrowClock.transform.rotation.w);
+        arrowClock.transform.transform.localPosition = defaultPosition;
     }
 
     public void EndMiniGame()
@@ -64,16 +88,20 @@ public class ReloadController : MonoBehaviour
         imageRedCircle.fillAmount = 0f;
         imageBoundCircle.fillAmount = 0f;
         arrowClock.GetComponent<Image>().fillAmount = 0f;
-        posX = 0;
-        posY = 0;
-        angle = Mathf.PI / 2;
-        arrowClock.transform.rotation = new Quaternion(0, 0, 0, arrowClock.transform.rotation.w);
-        arrowClock.transform.transform.localPosition = defaultPosition;
+
     }
 
-    private void DetectClickZone()
+    private bool isGreenZoneClicked()
     {
-
+        float angleInDegree = angle * (180 / Mathf.PI);
+        if (angleInDegree >= greenRangeStartAngle && angleInDegree <= greenRangeEndAngle)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private IEnumerator CreateArrow(float delay)
@@ -87,6 +115,7 @@ public class ReloadController : MonoBehaviour
     {
         if (inMiniGame)
         {
+            // Arrow movement logic
             if (clockwise && clockwiseFactor == 1)
             {
                 clockwiseFactor = -1;
@@ -109,10 +138,24 @@ public class ReloadController : MonoBehaviour
             {
                 angle = 0;
             }
+
+            // Handle user input
+            if (Input.GetKeyDown("space"))
+            {
+                if (isGreenZoneClicked())
+                {
+                    GetComponent<CannonController>().ReduceCooldown(reduceValue);
+                }
+                // fast reset to start new round
+                StartMiniGame(0f);
+
+                // Debug.Log("Arrow angle: " + (angle * (180 / Mathf.PI)).ToString()); 
+            }
         }
+
     }
 
-    IEnumerator SmoothCircleAppear(float valueStart, float valueEnd, float duration, Image circle)
+    IEnumerator SmoothImageAppear(float valueStart, float valueEnd, float duration, Image circle)
     {
         float elapsed = 0.0f;
         while (elapsed < duration)
@@ -122,38 +165,36 @@ public class ReloadController : MonoBehaviour
             yield return null;
         }
         circle.fillAmount = valueEnd;
-
     }
      
-    private void CreateCircles()
+    private void CreateCircles(float timeToAppear)
     {
         if (!greenCircle || !redCircle || !boundCircle || !arrowClock)
         {
             return;
         }
-        StartCoroutine(SmoothCircleAppear(0.0f, 1.0f, 0.25f, imageBoundCircle));
+
+        StartCoroutine(SmoothImageAppear(0.0f, 1.0f, timeToAppear, imageBoundCircle));
 
         float greenFillAmount = Random.Range(0.1f, 0.15f);
         float redFillAmount = 1 - greenFillAmount;
-        int fillOrigin = Random.Range(0, 4); // <0,3>, 0-bottom, 1-right, 2-top, 3-left
-        float rotation = Random.Range(0, 360) * (Mathf.PI/180);
+        int randAngle = Random.Range(0, 360);
+        float rotation = randAngle;
 
-        bool isClockwise = Random.value > 0.5f;
+        greenRangeStartAngle = randAngle - 90; // offset (-90) to synchronize with arrow clock
+        if (greenRangeStartAngle < 0) { greenRangeStartAngle += 360;  }
 
-        StartCoroutine(SmoothCircleAppear(0.0f, greenFillAmount, 0.5f, imageGreenCircle));
-        imageGreenCircle.fillOrigin = fillOrigin;
-        imageGreenCircle.fillClockwise = isClockwise;
-        greenCircle.transform.rotation = new Quaternion(0, 
-                                                        0,
-                                                        rotation,
-                                                        greenCircle.transform.rotation.w);
+        greenRangeEndAngle = greenRangeStartAngle + (float)(360.0 * greenFillAmount);
+        if (greenRangeEndAngle >= 360) { greenRangeEndAngle -= 360; }
 
-        StartCoroutine(SmoothCircleAppear(0.0f, redFillAmount, 0.5f, imageRedCircle));
-        imageRedCircle.fillOrigin = fillOrigin;
-        imageRedCircle.fillClockwise = !isClockwise;
-        redCircle.transform.rotation = new Quaternion(0,
-                                                      0,
-                                                      rotation,
-                                                      redCircle.transform.rotation.w);
+        // Debug.Log("Green zone range: " + fixedRandAngle.ToString() + "-" + greenZoneRange.ToString());
+
+        StartCoroutine(SmoothImageAppear(0.0f, greenFillAmount, timeToAppear*2, imageGreenCircle));
+        imageGreenCircle.fillClockwise = false;
+        greenCircle.transform.eulerAngles = new Vector3(0, 0, rotation);
+
+        StartCoroutine(SmoothImageAppear(0.0f, redFillAmount, timeToAppear*2, imageRedCircle));
+        imageRedCircle.fillClockwise = true;
+        redCircle.transform.eulerAngles = new Vector3(0, 0, rotation);
     }
 }

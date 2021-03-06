@@ -13,25 +13,22 @@ public class CannonController : MonoBehaviour
     [SerializeField] private GameObject ballPrefab;
     [SerializeField] private GameObject sliderObj;
     [SerializeField] private GameObject particleShotePrefab;
-
-    [SerializeField] private ReloadController reloadController;
-
-    [SerializeField] private Vector2 distance;
     [SerializeField] private float cooldown;
 
-    private float currentCooldown;
+    [SerializeField] private Vector2 distance;
 
+    private ReloadController reloadController;
     private Slider slider;
     private Vector3 firePointPosition;
     private Camera cam;
 
+    private float cooldownElapsed;
     private bool isReload;
 
     private void Start()
     {
-        //cam = transform.parent.GetComponentInChildren<Camera>();
         cam = transform.parent.parent.GetComponentInChildren<Camera>();
-        currentCooldown = 0;
+        cooldownElapsed = 0;
         if (sliderObj)
         {
             slider = sliderObj.GetComponent<Slider>();
@@ -53,7 +50,7 @@ public class CannonController : MonoBehaviour
         {
             Shoot();
         }
-        currentCooldown += Time.deltaTime;
+        cooldownElapsed += Time.deltaTime;
     }
 
     private void MoveCannon()
@@ -73,7 +70,7 @@ public class CannonController : MonoBehaviour
         float val;
         try
         {
-            val = currentCooldown / cooldown;
+            val = cooldownElapsed / cooldown;
         } catch (System.DivideByZeroException e)
         {
             val = 1;
@@ -83,12 +80,23 @@ public class CannonController : MonoBehaviour
         slider.value = val;
     }
 
+    public void ReduceCooldown(float value)
+    {
+        cooldownElapsed += value;
+    }
+
     private IEnumerator Reload()
     {
-        currentCooldown = 0;
+        cooldownElapsed = 0f;
 
         isReload = true;
-        yield return new WaitForSeconds(cooldown);
+        // 0.1f - 1 tick
+        for (;cooldownElapsed < cooldown; cooldownElapsed += 0.1f/2)
+        {
+            Debug.Log(cooldownElapsed);
+            yield return new WaitForSeconds(0.1f);
+        }
+        // yield return new WaitForSeconds(cooldown);
         reloadController.EndMiniGame();
         isReload = false;
     }
@@ -117,7 +125,10 @@ public class CannonController : MonoBehaviour
 
         if (UseUserInput)
         {
-            reloadController.StartMiniGame();
+            if (reloadController)
+            {
+                reloadController.InitMiniGame();
+            }
             StartCoroutine(Reload());
         }
     }
