@@ -157,7 +157,7 @@ MonoBehaviour:
   reduceValue: 3
   arrowClock: {fileID: 1498131475}
   rotationCenter: {fileID: 1404640946}
-  clockSpeed: 4.5
+  rotateSpeed: 4
   clockwise: 0
   timeToAppearModels: 0.25
 --- !u!1 &396015238
@@ -368,7 +368,7 @@ MonoBehaviour:
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
-  m_FillClockwise: 0
+  m_FillClockwise: 1
   m_FillOrigin: 3
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1

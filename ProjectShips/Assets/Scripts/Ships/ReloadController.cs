@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/* Control:
+    -> SPACE - pick
+    -> Right Mouse Click - switch direction of arrow rotation
+ */
+
 public class ReloadController : MonoBehaviour
 {
     [SerializeField] private GameObject boundCircle;
@@ -14,7 +19,7 @@ public class ReloadController : MonoBehaviour
 
     [SerializeField] private GameObject arrowClock;
     [SerializeField] private Transform rotationCenter;
-    [SerializeField] private float clockSpeed;
+    [SerializeField] private float rotateSpeed;
     [SerializeField] private bool clockwise;
 
     private Image imageGreenCircle;
@@ -26,10 +31,9 @@ public class ReloadController : MonoBehaviour
     private Vector3 defaultPosition;
 
     private float clockRadius;
-    private float posX, posY;
+    private Vector2 rotateCenter;
     private float angle;
 
-    private int clockwiseFactor = 1;
     private bool inMiniGame = false;
 
     private float greenRangeStartAngle = 0f;
@@ -50,8 +54,8 @@ public class ReloadController : MonoBehaviour
         imageBoundCircle.fillAmount = 0f;
         arrowClock.GetComponent<Image>().fillAmount = 0f;
 
-        imageGreenCircle.fillOrigin = 0;
-        imageRedCircle.fillOrigin = 0;
+        imageGreenCircle.fillOrigin = 2;
+        imageRedCircle.fillOrigin = 2;
         imageBoundCircle.fillOrigin = 0;
         arrowClock.GetComponent<Image>().fillOrigin = 0;
 
@@ -68,14 +72,9 @@ public class ReloadController : MonoBehaviour
         RectTransform rt = boundCircle.GetComponent<RectTransform>();
         clockRadius = (rt.rect.width / 2 - rt.rect.width / 4);
 
-
         CreateCircles(timeToAppear);
         StartCoroutine(SmoothImageAppear(0f, 1f, timeToAppear, arrowClock.GetComponent<Image>()));
         StartCoroutine(CreateArrow(timeToAppear*2));
-
-        posX = 0;
-        posY = 0;
-        angle = Mathf.PI / 2;
 
         arrowClock.transform.rotation = new Quaternion(0, 0, 0, arrowClock.transform.rotation.w);
         arrowClock.transform.transform.localPosition = defaultPosition;
@@ -89,25 +88,44 @@ public class ReloadController : MonoBehaviour
         imageBoundCircle.fillAmount = 0f;
         arrowClock.GetComponent<Image>().fillAmount = 0f;
 
+        arrowClock.transform.rotation = new Quaternion(0, 0, 0, arrowClock.transform.rotation.w);
+        arrowClock.transform.transform.localPosition = defaultPosition;
     }
 
     private bool isGreenZoneClicked()
     {
         float angleInDegree = angle * (180 / Mathf.PI);
-        if (angleInDegree >= greenRangeStartAngle && angleInDegree <= greenRangeEndAngle)
+
+        // 1 case - startAngle < endAngle
+        if (greenRangeStartAngle < greenRangeEndAngle)
         {
-            return true;
+            if (angleInDegree >= greenRangeStartAngle && angleInDegree <= greenRangeEndAngle)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
+        // 2 case - startAngle < endAngle
         else
         {
-            return false;
+            if (angleInDegree <= greenRangeStartAngle && angleInDegree <= greenRangeEndAngle)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 
     private IEnumerator CreateArrow(float delay)
     {
         yield return new WaitForSeconds(delay);
-        angle = Mathf.PI / 2;
+        angle = 0;
         inMiniGame = true;
     }
 
@@ -116,27 +134,26 @@ public class ReloadController : MonoBehaviour
         if (inMiniGame)
         {
             // Arrow movement logic
-            if (clockwise && clockwiseFactor == 1)
+            if (clockwise)
             {
-                clockwiseFactor = -1;
-                arrowClock.transform.Rotate(new Vector3(0, 0, 180));
+                angle += rotateSpeed * Time.deltaTime;
             }
-            else if (!clockwise && clockwiseFactor == -1)
+            else if (!clockwise)
             {
-                clockwiseFactor = 1;
-                arrowClock.transform.Rotate(new Vector3(0, 0, 180));
+                angle -= rotateSpeed * Time.deltaTime;
             }
+            var offset = new Vector2(Mathf.Sin(angle) * clockRadius, Mathf.Cos(angle) * clockRadius);
 
-            posX = rotationCenter.position.x + Mathf.Cos(angle) * clockRadius * clockwiseFactor;
-            posY = rotationCenter.position.y + Mathf.Sin(angle) * clockRadius * clockwiseFactor;
+            arrowClock.transform.localPosition = rotateCenter + offset;
+            arrowClock.transform.localEulerAngles = new Vector3(0, 0, -angle*(180/Mathf.PI));
 
-            arrowClock.transform.Rotate(new Vector3(0, 0, Time.deltaTime * clockSpeed * (180 / Mathf.PI) * clockwiseFactor));
-            angle += Time.deltaTime * clockSpeed * clockwiseFactor;
-
-            arrowClock.transform.position = new Vector2(posX, posY);
             if (angle >= 2 * Mathf.PI)
             {
-                angle = 0;
+                angle -= 2 * Mathf.PI;
+            }
+            else if (angle < 0)
+            {
+                angle += 2 * Mathf.PI;
             }
 
             // Handle user input
@@ -147,9 +164,16 @@ public class ReloadController : MonoBehaviour
                     GetComponent<CannonController>().ReduceCooldown(reduceValue);
                 }
                 // fast reset to start new round
+                EndMiniGame();
                 StartMiniGame(0f);
 
-                // Debug.Log("Arrow angle: " + (angle * (180 / Mathf.PI)).ToString()); 
+                Debug.Log("Arrow angle: " + (angle * (180 / Mathf.PI)).ToString()); 
+            }
+
+            // Right mouse click
+            if (Input.GetMouseButtonDown(1))
+            {
+                clockwise = !clockwise;
             }
         }
 
@@ -181,13 +205,25 @@ public class ReloadController : MonoBehaviour
         int randAngle = Random.Range(0, 360);
         float rotation = randAngle;
 
-        greenRangeStartAngle = randAngle - 90; // offset (-90) to synchronize with arrow clock
-        if (greenRangeStartAngle < 0) { greenRangeStartAngle += 360;  }
+        greenRangeStartAngle = randAngle;
+        greenRangeEndAngle = greenRangeStartAngle + 360*greenFillAmount;
 
-        greenRangeEndAngle = greenRangeStartAngle + (float)(360.0 * greenFillAmount);
-        if (greenRangeEndAngle >= 360) { greenRangeEndAngle -= 360; }
+        // Shift angles to match with arrow origin
+        float tmpStart = greenRangeStartAngle;
+        float tmpEnd = greenRangeEndAngle;
 
-        // Debug.Log("Green zone range: " + fixedRandAngle.ToString() + "-" + greenZoneRange.ToString());
+        greenRangeStartAngle = 360 - tmpEnd;
+        if (greenRangeStartAngle < 0)
+        {
+            greenRangeStartAngle += 360;
+        }
+        greenRangeEndAngle = 360 - tmpStart;
+        if (greenRangeEndAngle < 0)
+        {
+            greenRangeEndAngle += 360;
+        }
+
+        Debug.Log("Green zone range: " + greenRangeStartAngle.ToString() + "-" + greenRangeEndAngle.ToString());
 
         StartCoroutine(SmoothImageAppear(0.0f, greenFillAmount, timeToAppear*2, imageGreenCircle));
         imageGreenCircle.fillClockwise = false;

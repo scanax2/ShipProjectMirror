@@ -93,7 +93,7 @@ public class CannonController : MonoBehaviour
         // 0.1f - 1 tick
         for (;cooldownElapsed < cooldown; cooldownElapsed += 0.1f/2)
         {
-            Debug.Log(cooldownElapsed);
+            // Debug.Log(cooldownElapsed);
             yield return new WaitForSeconds(0.1f);
         }
         // yield return new WaitForSeconds(cooldown);
