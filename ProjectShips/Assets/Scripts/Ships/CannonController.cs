@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using ProjectShips.Ships;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -97,7 +98,8 @@ public class CannonController : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
         // yield return new WaitForSeconds(cooldown);
-        reloadController.EndMiniGame();
+        if (reloadController)
+            reloadController.EndMiniGame();
         isReload = false;
     }
 
@@ -111,6 +113,7 @@ public class CannonController : MonoBehaviour
         }
 
         var go = Instantiate(ballPrefab, firePointPosition, Quaternion.identity);
+
         var rigidbody = go.GetComponent<Rigidbody>();
 
         Vector3 forwardVector = transform.GetChild(0).forward * strength;

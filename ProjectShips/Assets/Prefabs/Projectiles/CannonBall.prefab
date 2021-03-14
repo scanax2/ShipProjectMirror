@@ -101,33 +101,12 @@ MonoBehaviour:
   DeathDelay: 5
   ExplosionRadius: 2
   ExplosionPower: 1
+  HitParticles:
+  - {fileID: 2107827775434688401, guid: 8fafc72a64f971c438b9b726633a33f1, type: 3}
+  - {fileID: 8629355591399394497, guid: d13abbf820274374b964da3cff178db2, type: 3}
   HitShipPart:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5610187593935566273, guid: 8fafc72a64f971c438b9b726633a33f1, type: 3}
-        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 1
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3139367783194199466, guid: d13abbf820274374b964da3cff178db2, type: 3}
-        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 1
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!135 &1165575748125143560
 SphereCollider:
   m_ObjectHideFlags: 0

@@ -12,6 +12,7 @@ namespace ProjectShips.Ships
         public float ExplosionRadius = 1.5f;
         public float ExplosionPower = 1f;
 
+        public GameObject[] HitParticles;
 
         /// <summary>
         /// Event executed on ball collision with ship part.
@@ -19,11 +20,12 @@ namespace ProjectShips.Ships
         public UnityEvent<float, CannonBall> HitShipPart;
 
         Rigidbody _rigidbody;
+        bool _handledEvent;
 
         private void Start()
         {
             _rigidbody = GetComponent<Rigidbody>();
-          
+            HitShipPart.AddListener(OnHit);
         }
 
         private void OnDestroy()
@@ -61,10 +63,21 @@ namespace ProjectShips.Ships
                 }
             }
 
-            if(collision.gameObject.TryGetComponent<ShipPart>(out _))
+            if (!_handledEvent && collision.gameObject.TryGetComponent<ShipPart>(out _))
+            {
                 HitShipPart?.Invoke(
                     ShipPart.CalculateMomentum(_rigidbody.velocity, _rigidbody.mass, collision.contacts[0].normal),
                     this);
+                _handledEvent = true;
+            }
+        }
+
+        private void OnHit(float momentum, CannonBall cannonBall)
+        {
+            foreach (var particlePrefab in HitParticles)
+            {
+                Instantiate(particlePrefab, transform.position, Quaternion.identity);
+            }
         }
     }
 }
